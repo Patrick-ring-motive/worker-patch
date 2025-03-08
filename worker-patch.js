@@ -1,17 +1,14 @@
-
-  (() => {
+(() => {
     const _Worker = globalThis.Worker;
     const $Worker = class Worker extends _Worker {
       constructor(url,options) {
         const patch = 'console.log("asdf");';
-        const request = new XMLHttpRequest();
-        request.open("GET", url, false);
-        request.send();
-
-if (request.status === 200) {
-  console.log(request.responseText);
-}
-
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", url, false);
+        xhr.send();
+        const code = patch + xhr.responseText;
+        const newURL = URL.createObjectURL(new Blob([code],{type:"text/javascript"}));
+        super(newURL,options);
       }
     };
     globalThis.Worker = $Worker;
